@@ -15,7 +15,7 @@ class CustomersController extends Controller
 	public function index(Request $request) {
 		$links = array('customers.js');			
 		$customers = Customers::where('status','1')->orderBy('id', 'desc')->paginate(10);
-      	return view('customers/index',compact('customers'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
+		return view('customers/index',compact('customers'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
 	}
 
 	public function customer() {
@@ -115,7 +115,8 @@ class CustomersController extends Controller
 						$service->plan_name =  $row['plan_name'];	
 						$service->plan_price =  $row['plan_price'];	
 						$service->plan_type =  $row['plan_type'];	
-						$service->handset_type =  $row['handset_type'];	
+						$service->handset_type =  $row['handset_type'];
+						$service->handset_value =  $row['handset_value'];	
 						$service->contract_stage =  $row['contract_stage'];	
 						$service->id_status =  $row['id_status'];	
 						$service->direct_debit_details =  $row['direct_debit_details'];	
@@ -148,24 +149,26 @@ class CustomersController extends Controller
 				'product_type' => 'required',
 				'plan_value' => 'required',
 				'handset_type' => 'required',
+				'handset_value' => 'required',
 				'id_status' => 'required',
 				'order_status_date' => 'required'
 			]);
-            //return "AJAX";            
-            $service = array();  
-            $service['cli_number'] = $request->cli_number;	
+			//return "AJAX";            
+			$service = array();  
+			$service['cli_number'] = $request->cli_number;	
 			$service['product_type'] =  $request->product_type;	
 			$service['plan_name'] =  $request->plan_name;	
 			$service['plan_price'] =  $request->plan_value;	
 			$service['plan_type'] =  $request->plan_type;	
 			$service['handset_type'] =  $request->handset_type;	
+			$service['handset_value'] =  $request->handset_value;	
 			$service['contract_stage'] =  $request->contract_stage;	
 			$service['id_status'] =  $request->id_status;	
 			$service['direct_debit_details'] =  $request->direct_debit_details;	
 			$service['order_status'] =  $request->order_status;	
 			$service['order_status_date'] =  $request->order_status_date;	
 			if (Session::has('servies_data')) {
-			  	$serviceData = Session::get('servies_data');
+				$serviceData = Session::get('servies_data');
 			} else {
 				$serviceData = array();
 			}
@@ -174,7 +177,7 @@ class CustomersController extends Controller
 			Session::put('servies_data', $serviceData);
 			$sessionData = Session::get('servies_data');
 			$flag = true;
-        }
+		}
 		return response()->json(['success' => $flag , 'response' => $sessionData]);
 	}
 
@@ -198,29 +201,37 @@ class CustomersController extends Controller
 
 
 	public function destroy($id) {                
-        $customer = Customers::find($id);
-        $customer->status = '0';
-        $customer->save();        
-        return redirect('/customer')->with('message', 'Customer has been deleted!!');
-    } 
+		$customer = Customers::find($id);
+		$customer->status = '0';
+		$customer->save();        
+		return redirect('/customer')->with('message', 'Customer has been deleted!!');
+	} 
 
 
-    //
+	//
 	public function leads(Request $request) {
 		$links = array('leads.js');			
 		$leads = Leads::where('status','1')->orderBy('id', 'desc')->paginate(10);
-      	return view('customers/leads',compact('leads'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
+		return view('customers/leads',compact('leads'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
 	}
 
 	public function leadDestory($id) {                
-        $customer = Leads::find($id);
-        $customer->status = '0';
-        $customer->save();        
-        return redirect('/leads')->with('message', 'Lead has been deleted!!');
-    }
+		$customer = Leads::find($id);
+		$customer->status = '0';
+		$customer->save();        
+		return redirect('/leads')->with('message', 'Lead has been deleted!!');
+	}
 
-    public function edit($id) {
-    	
-    } 	
+	public function editLead($id) {
+		$customer = Leads::find($id);    	
+		$links = array('edit_sales.js');		
+		return view('customers/edit')->with('links', $links)->with('customer', $customer);
+	} 	
+	
+	public function editSales($id) {
+		$customer = Customers::find($id);    	
+		$links = array('edit_sales.js');		
+		return view('customers/edit')->with('links', $links)->with('customer', $customer);
+	} 
 
 }

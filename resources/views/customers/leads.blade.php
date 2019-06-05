@@ -38,7 +38,7 @@
 											<td>{!! $customer->customer_type !!}</td>
 											<td>{!! $customer->op_date !!}</td>
 											<td> &nbsp 
-												<a class="btn btn-warning btn-xs" href="#" role="button"> 
+												<a class="btn btn-warning btn-xs" href="{{ URL::to('lead/edit/' . $customer->id) }}" role="button"> 
 													<i class="fa fa-edit"></i> Edit
 												</a>
 												<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="delete_cust({{ $i }})" role="button">
