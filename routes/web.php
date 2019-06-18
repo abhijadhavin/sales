@@ -27,3 +27,6 @@ Route::get('/leads', 'CustomersController@leads');
 Route::post('/lead/destroy/{id}', 'CustomersController@leadDestory');
 Route::get('/lead/edit/{id}', 'CustomersController@editLead');
 Route::get('/sale/edit/{id}', 'CustomersController@editSales');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -41,12 +41,14 @@
 												<a class="btn btn-warning btn-xs" href="{{ URL::to('lead/edit/' . $customer->id) }}" role="button"> 
 													<i class="fa fa-edit"></i> Edit
 												</a>
+												<?php /*
 												<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="delete_cust({{ $i }})" role="button">
 													<i class="fa fa-remove"></i> Delete
-												</a>
+												</a>												
 												<form id="delete-frm-{{ $i }}" action="{{action('CustomersController@leadDestory', $customer->id)}}" method="post">
 													{{csrf_field()}}								                    
 												</form>
+												*/ ?>
 											</td>
 										</tr>
 										@endforeach		                          

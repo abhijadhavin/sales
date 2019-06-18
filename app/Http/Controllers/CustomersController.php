@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Address;
 use App\Customers;
 use App\Services;
@@ -11,10 +12,26 @@ use Session;
 
 class CustomersController extends Controller
 {
+
+	 /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
 	//
 	public function index(Request $request) {
+		$id = Auth::id();
 		$links = array('customers.js');			
-		$customers = Customers::where('status','1')->orderBy('id', 'desc')->paginate(10);
+		if(in_array($id, array(4,3,2))){
+			$customers = Customers::where('status','1')->orderBy('id', 'desc')->paginate(10);
+		} else {
+			$customers = Customers::where('status','1')->where('user_id',$id)->orderBy('id', 'desc')->paginate(10);
+		}		
 		return view('customers/index',compact('customers'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
 	}
 
@@ -27,7 +44,8 @@ class CustomersController extends Controller
 	}   
 
 	public function storeCustomer(Request $request) {
-		//print_r( $request); 				
+		//print_r( $request); 	
+		$id = Auth::id();			
 		$validatedData = $request->validate([
 			'op_date' => 'required',
 			'executive_id' => 'required',
@@ -47,7 +65,7 @@ class CustomersController extends Controller
 		if ( $formtype === 'lead') {
 
 			$lead = new Leads();
-			$lead->user_id = 0;
+			$lead->user_id = $id;
 			$lead->executive_id = $request->executive_id;
 			$lead->first_name = $request->first_name;
 			$lead->middle_name = $request->middle_name;
@@ -67,7 +85,7 @@ class CustomersController extends Controller
 				'services' => 'required'			
 			]);
 			$task = new Customers();
-			$task->user_id = 0;			
+			$task->user_id = $id;			
 			$task->executive_id = $request->executive_id;
 			$task->first_name = $request->first_name;
 			$task->middle_name = $request->middle_name;
@@ -210,8 +228,13 @@ class CustomersController extends Controller
 
 	//
 	public function leads(Request $request) {
-		$links = array('leads.js');			
-		$leads = Leads::where('status','1')->orderBy('id', 'desc')->paginate(10);
+		$id = Auth::id();
+		$links = array('leads.js');	
+		if(in_array($id, array(4,3,2))){		
+			$leads = Leads::where('status','1')->orderBy('id', 'desc')->paginate(10);
+		} else {
+			$leads = Leads::where('status','1')->where('user_id',$id)->orderBy('id', 'desc')->paginate(10);
+		}	
 		return view('customers/leads',compact('leads'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
 	}
 
