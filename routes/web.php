@@ -27,6 +27,14 @@ Route::get('/leads', 'CustomersController@leads');
 Route::post('/lead/destroy/{id}', 'CustomersController@leadDestory');
 Route::get('/lead/edit/{id}', 'CustomersController@editLead');
 Route::get('/sale/edit/{id}', 'CustomersController@editSales');
+
+Route::get('/users', 'UsersController@index');
+Route::get('/users/create', 'UsersController@create');
+Route::post('/users/store', 'UsersController@store');
+Route::get('/users/edit/{id}', 'UsersController@edit');
+Route::post('/users/update/{id}', 'UsersController@update');
+Route::post('/users/destroy/{id}', 'UsersController@destroy');
+Route::get('/users/center/{id}', 'UsersController@center');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
