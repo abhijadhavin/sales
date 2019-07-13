@@ -8,6 +8,8 @@ class User_Center extends Model
 {    
     //
     public $timestamps = false;
+
+    protected $table = 'user_center';
     //
     protected $fillable = [
 		'id',

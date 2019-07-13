@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             RoleTableSeeder::class,
             UsersRoleTableSeeder::class
+            CenterTableSeeder::class
         ]);        
     }
 }

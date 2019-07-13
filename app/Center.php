@@ -8,6 +8,8 @@ class Center extends Model
 {
     //
     public $timestamps = false;
+
+    protected $table = 'center';
     //
     protected $fillable = [
 		'id',

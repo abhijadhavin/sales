@@ -144,7 +144,7 @@ function center(editId) {
 	} else {	
 		var tag = $("<div id=\"dialogcenter\"></div>");
 	}
-	$(tag).attr("title", "Edit User");
+	$(tag).attr("title", "Select User Center");
 	$.ajax({
 		type: "get",		 
 		cache:false,
@@ -159,7 +159,7 @@ function center(editId) {
 				modal: true,
 				buttons: {
 					Submit: function(){
-						var formData = $("#formcenter").serialize();	
+						var formData = $("#formCenter").serialize();	
 						$.ajax({
 							type:"POST",
 							cache:false,

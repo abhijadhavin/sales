@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Input;
 
 use Validator;
 use Auth;
@@ -14,6 +15,7 @@ use App\Roles;
 use App\Center;
 use App\User_roles;
 use App\User_Center;
+ 
 
 class UsersController extends Controller
 {  
@@ -22,9 +24,7 @@ class UsersController extends Controller
     	$this->middleware('auth');
     }
 
-    public function index(Request $request) {  
-     	$centers = Center::all();     	
-     	print_r($centers);
+    public function index(Request $request) {     	
 		$id = Auth::id();
 		$links = array('users.js');					
 		$users = User::where('status', '1')->orderBy('id', 'desc')->paginate(10);
@@ -93,14 +93,7 @@ class UsersController extends Controller
             	'user_id'  => $user->id,
             	'role_id'  => $request->input('role'),            
         	]);
-        }	
-        	
-        /*
-        if ($this->_rolesEnabled) {
-            $user->attachRole($request->input('role'));
-            $user->save();
-        }
-        */
+        }       
 
         Session::flash('alert-success', 'laravelusers.messages.user-creation-success');
 
@@ -195,19 +188,47 @@ class UsersController extends Controller
 	} 
 
 
-	public function center($id) {
-        $user = User::findOrFail($id);        
-        $centers = Center::all();         
-     	$currentRoles = User_Center::where('user_id', $id) ;        	   	
+	public function center($id) {                
+        $centers = Center::all(); 
+     	$userCenters = User_Center::where('user_id', $id)->get();
+     	$currentCenters = array();
+     	foreach ($userCenters as $key => $row) {
+     		$currentCenters[] = $row->center_id;
+     	}     
         $data = [            
         	'centers' =>   $centers,
-        	'currentCenters' =>  $currentRoles
+        	'currentCenters' =>  $currentCenters
         ];      
         return view('users/center')->with($data);
     }
 
-    public function update_center() {
-
+    public function update_center(Request $request, $userId) {
+    	$currentCenters = User_Center::where('user_id', $userId)->get(); 
+    	$ids = array();
+    	foreach ($currentCenters as $key => $row) {
+    		$ids[] = $row->id;
+    	}
+    	if(count($ids) > 0) {
+    		User_Center::whereIn('id', $ids)->delete();		
+    	}     
+    	$newCenter = Input::get('center');
+    	if(isset($newCenter) && is_array($newCenter) && count($newCenter)>0) {
+    		foreach ($newCenter as $key => $center) {    			 
+    			User_Center::create([
+	            	'user_id'  => $userId,
+	            	'center_id'  => $center,            
+	        	]);
+    		}
+    	}
+    	 
+    	if(isset($newCenter) && !empty($newCenter) && is_string($newCenter)) {
+    		User_Center::create([
+	           	'user_id'   => $userId,
+	           	'center_id' => $newCenter,            
+	        ]);
+    	}
+     
+    	return response()->json(['success' =>  true , 'response' => trans('Center set Successfully!!!')]);
     }
 
 }

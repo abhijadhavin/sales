@@ -35,6 +35,7 @@ Route::get('/users/edit/{id}', 'UsersController@edit');
 Route::post('/users/update/{id}', 'UsersController@update');
 Route::post('/users/destroy/{id}', 'UsersController@destroy');
 Route::get('/users/center/{id}', 'UsersController@center');
+Route::post('/users/update_center/{id}', 'UsersController@update_center');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

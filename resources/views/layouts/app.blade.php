@@ -41,48 +41,60 @@
 		</div>
 		<!-- Note that the .navbar-collapse and .collapse classes have been removed from the #navbar -->
 		<div id="navbar">
-		  	
+			
 		  
 		  <ul class="nav navbar-nav navbar-right">
-		  	<li>
-		  		<form class="navbar-form navbar-left" role="search">
+			<?php /*
+			<li>
+				<form class="navbar-form navbar-left" role="search">
 					<div class="form-group">
 					  <input type="text" class="form-control" placeholder="Executive Id">
 					</div>
 					<button type="submit" class="btn btn-default">Submit</button>
 				</form>	
-		  	</li>
-			<li><a href="/customer"><i class="fa fa-list"></i> CUSTOMER LIST DATA</a></li>
+			</li>
+			*/
+			?>
+			<li><a href="/"><i class="fa fa-list"></i> ADD LEAD/SALES DATA</a></li>
+			<li><a href="/customer"><i class="fa fa-list"></i> SALES LIST DATA</a></li>
 			<li><a href="/leads"><i class="fa fa-list"></i> LEADS DATA</a></li>
 			<!-- Authentication Links -->
-                        @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest			
+						@guest
+							<li class="nav-item"></li>
+							<?php /*
+							<li class="nav-item">
+								<a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+							</li>
+							@if (Route::has('register'))
+								<li class="nav-item">
+									<a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+								</li>
+							@endif
+							*/ ?>
+						@else
+							<li class="nav-item dropdown">
+								<a id="navbarDropdown" class="nav-link dro pdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+									{{ Auth::user()->name }} <span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+									<li>
+										<a class="dropdown-item" href="/users">
+											{{ __('Manage Users') }}
+										</a>
+									</li>
+									<li> 
+										<a class="dropdown-item" href="{{ route('logout') }}"
+										   onclick="event.preventDefault();
+														 document.getElementById('logout-form').submit();">
+											{{ __('Logout') }}
+										</a>
+										<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+											@csrf
+										</form>
+									</li>
+								</ul>
+							</li>
+						@endguest			
 		  </ul>
 		</div><!--/.nav-collapse -->
 	  </div>
