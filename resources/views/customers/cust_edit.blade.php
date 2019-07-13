@@ -4,24 +4,27 @@
 @section('content')
 
 	<!-- Bootstrap Boilerplate... -->
-
+	<?php
+		//print_r($customer); 
+	?>
 	<div class="container">
 		<!-- Display Validation Errors -->
 		@include('common.errors')
 
 		<!-- New Task Form -->
-		<form action="/storedata" method="POST" class="form-horizontal">
+		<form action="/sale/update_sale_data/{{$customer->id }}" method="POST" class="form-horizontal">
 			{{ csrf_field() }}
 			 
 			<div class="panel panel-default">
-				<div class="panel-heading">Customer Details</div>
+				<div class="panel-heading">Edit Customer Details</div>
 				<div class="panel-body">
 					<div class="form-group">
 						<label for="inputEmail3" class="col-sm-2 control-label">Today Date:</label>
 						<div class="col-sm-10">							
 							<div class="row">
 								<div class="col-xs-3">
-									<input type="date" name="op_date" class="form-control" id="tdate" placeholder="Today Date" required value="{{ old('op_date') }}">
+									<input type="date" name="op_date" class="form-control" id="tdate" placeholder="Today Date" required value="{{$customer->op_date }}">
+									<input type="hidden" id="editCustId" value="{{$customer->id }}" >
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>		
 							</div>
@@ -32,7 +35,7 @@
 						<div class="col-sm-10">							
 							<div class="row">
 								<div class="col-xs-3">
-									<input type="number" name="executive_id" class="form-control" id="executiveId" placeholder="Executive Id" required value="{{ old('executive_id') }}" >
+									<input type="number" name="executive_id" class="form-control" id="executiveId" placeholder="Executive Id" required value="{{$customer->executive_id }}" >
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>		
 							</div>
@@ -43,13 +46,13 @@
 						<div class="col-sm-10">
 							<div class="row">
 							  <div class="col-xs-3">
-								<input type="text" class="form-control" name="first_name" placeholder="First Name" required value="{{ old('first_name') }}" >
+								<input type="text" class="form-control" name="first_name" placeholder="First Name" required value="{{$customer->first_name }}" >
 							  </div>
 							  <div class="col-xs-3">
-								<input type="text" class="form-control" name="middle_name" placeholder="Middle Name" required value="{{ old('middle_name') }}" >
+								<input type="text" class="form-control" name="middle_name" placeholder="Middle Name" required value="{{ $customer->middle_name}}" >
 							  </div>
 							  <div class="col-xs-3">
-								<input type="text" class="form-control" name="last_name" placeholder="Last Name" required value="{{ old('last_name') }}">
+								<input type="text" class="form-control" name="last_name" placeholder="Last Name" required value="{{ $customer->last_name}}">
 							  </div>
 							</div>
 						</div>
@@ -59,7 +62,7 @@
 						<div class="col-sm-10">
 							<div class="row">
 								<div class="col-xs-3">
-									<input type="text" class="form-control" name="contact" id="contact_no" placeholder="Contact No" required value="{{ old('contact') }}">
+									<input type="text" class="form-control" name="contact" id="contact_no" placeholder="Contact No" required value="{{ $customer->contact }}">
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>		
 							</div>
@@ -70,7 +73,7 @@
 						<div class="col-sm-10">							
 							<div class="row">
 								<div class="col-xs-3">
-									<input type="email" name="email" class="form-control" id="emailId" placeholder="Email address " required value="{{ old('email') }}" >
+									<input type="email" name="email" class="form-control" id="emailId" placeholder="Email address " required value="{{ $customer->email  }}" >
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>		
 							</div>
@@ -81,27 +84,27 @@
 						<div class="col-sm-10">
 							<div class="form-group row">
 								<div class="col-xs-3">
-									<input type="text" class="form-control" name="street_address1" placeholder="Street Address" required value="{{ old('street_address1') }}" >
+									<input type="text" class="form-control" name="street_address1" placeholder="Street Address" required value="{{ $address->street_address1 }}" >
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>							 
 							</div>							
 							<div class="form-group row">
 								<div class="col-xs-3">
-									<input type="text" class="form-control" name="street_address2" placeholder="Street Address Line 2 " required value="{{ old('street_address2') }}" >
+									<input type="text" class="form-control" name="street_address2" placeholder="Street Address Line 2 " required value="{{ $address->street_address2  }}" >
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>							 
 							</div>
 							<div class="form-group row">
 								<div class="col-xs-4">
-									<input type="text" class="form-control" name="suburb" placeholder="Suburb" required value="{{ old('suburb') }}" >
+									<input type="text" class="form-control" name="suburb" placeholder="Suburb" required value="{{ $address->suburb }}" >
 								</div>
 								<div class="col-xs-4">
-									<input type="text" class="form-control" name="state" placeholder="State / Province" required value="{{ old('state') }}" >
+									<input type="text" class="form-control" name="state" placeholder="State / Province" required value="{{ $address->state }}" >
 								</div>							  
 							</div>							 
 							<div class="form-group row">
 								<div class="col-xs-3">
-									<input type="text" class="form-control" name="postcode" placeholder="Postal / Zip Code" required value="{{ old('postcode') }}" >									
+									<input type="text" class="form-control" name="postcode" placeholder="Postal / Zip Code" required value="{{ $address->postcode }}" >									
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>							 
 							</div>
@@ -114,8 +117,8 @@
 								<div class="col-xs-3">
 									<select name="customer_type" class="form-control">
 										<option value=""> Select Type </option>
-										<option value="Consumer" @if (old('customer_type') == "Consumer") {{ 'selected' }} @endif > Consumer</option>
-										<option value="Business" @if (old('customer_type') == "Business") {{ 'selected' }} @endif > Business </option>
+										<option value="Consumer" @if ( $customer->customer_type == "Consumer") {{ 'selected' }} @endif > Consumer</option>
+										<option value="Business" @if ( $customer->customer_type == "Business") {{ 'selected' }} @endif > Business </option>
 									</select>
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>
@@ -127,7 +130,7 @@
 						<div class="col-sm-10">							
 							<div class="row">
 								<div class="col-xs-4">
-									<textarea rows="4" cols="50" class="form-control" name="comments" id="comments">{{ old('comments') }}</textarea>
+									<textarea rows="4" cols="50" class="form-control" name="comments" id="comments">{{ $customer->comments  }}</textarea>					 
 								</div>
 								<div class="col-xs-5"> &nbsp; </div>		
 							</div>
@@ -138,11 +141,12 @@
 						<div class="col-sm-10">
 							<div class="form-group row">
 								<div class="col-xs-3">
-									<select name="form_type" id="formType" class="form-control">
+									<select name="form_type1" id="formType" class="form-control" disabled="disable">
 										<option value="">   Type </option>
-										<option value="lead" @if (old('form_type') == "lead") {{ 'selected' }} @endif > Lead Form</option>
-										<option value="sales" @if (old('form_type') == "sales") {{ 'selected' }} @endif > Sales Form </option>
-									</select>									
+										<option value="lead" > Lead Form</option>
+										<option value="sales" selected="selected" > Sales Form </option>
+									</select>	
+									<input type="hidden" name="form_type" value="sales" />								
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>
 							</div>	
@@ -151,7 +155,7 @@
 				</div>
 			</div>
 
-			<div class="panel panel-default" id="service-box" style="display:none">
+			<div class="panel panel-default" id="service-box" >
 				<div class="panel-heading">Service Details</div>
 				<div class="panel-body" >
 				 

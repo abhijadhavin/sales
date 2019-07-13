@@ -19,12 +19,12 @@ use App\User_Center;
 
 class UsersController extends Controller
 {  
-    public function __construct() 
-    {
-    	$this->middleware('auth');
-    }
+	public function __construct() 
+	{
+		$this->middleware('auth');
+	}
 
-    public function index(Request $request) {     	
+	public function index(Request $request) {     	
 		$id = Auth::id();
 		$links = array('users.js');					
 		$users = User::where('status', '1')->orderBy('id', 'desc')->paginate(10);
@@ -33,154 +33,154 @@ class UsersController extends Controller
 
 
 	/**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $roles = [];
-        $roles = Roles::all();        
-        $data = [            
-            'roles' => $roles,
-        ];
-        return view('users/create')->with($data);
-    }
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		$roles = [];
+		$roles = Roles::all();        
+		$data = [            
+			'roles' => $roles,
+		];
+		return view('users/create')->with($data);
+	}
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $rules = [
-            'name'                  => 'required|string|max:255',
-            'email'                 => 'required|email|max:255|unique:users',
-            'password'              => 'required|string|confirmed|min:6',
-            'password_confirmation' => 'required|string|same:password',
-            'role' 					=> 'required'
-        ];        
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(Request $request)
+	{
+		$rules = [
+			'name'                  => 'required|string|max:255',
+			'email'                 => 'required|email|max:255|unique:users',
+			'password'              => 'required|string|confirmed|min:6',
+			'password_confirmation' => 'required|string|same:password',
+			'role' 					=> 'required'
+		];        
 
-        $messages = [
-            'name.unique'         => trans('laravelusers.messages.userNameTaken'),
-            'name.required'       => trans('laravelusers.messages.userNameRequired'),
-            'email.required'      => trans('laravelusers.messages.emailRequired'),
-            'email.email'         => trans('laravelusers.messages.emailInvalid'),
-            'password.required'   => trans('laravelusers.messages.passwordRequired'),
-            'password.min'        => trans('laravelusers.messages.PasswordMin'),
-            'password.max'        => trans('laravelusers.messages.PasswordMax'),
-            'role.required'       => trans('laravelusers.messages.roleRequired'),
-        ];
+		$messages = [
+			'name.unique'         => trans('laravelusers.messages.userNameTaken'),
+			'name.required'       => trans('laravelusers.messages.userNameRequired'),
+			'email.required'      => trans('laravelusers.messages.emailRequired'),
+			'email.email'         => trans('laravelusers.messages.emailInvalid'),
+			'password.required'   => trans('laravelusers.messages.passwordRequired'),
+			'password.min'        => trans('laravelusers.messages.PasswordMin'),
+			'password.max'        => trans('laravelusers.messages.PasswordMax'),
+			'role.required'       => trans('laravelusers.messages.roleRequired'),
+		];
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-       
-        if ($validator->fails()) {
-        	$messages = $validator->messages();
-            return response()->json(['success' => false , 'response' => $messages]);
-        }       
-        $user = User::create([
-            'name'             => $request->input('name'),
-            'email'            => $request->input('email'),
-            'password'         => bcrypt($request->input('password')),
-        ]);
+		$validator = Validator::make($request->all(), $rules, $messages);
+	   
+		if ($validator->fails()) {
+			$messages = $validator->messages();
+			return response()->json(['success' => false , 'response' => $messages]);
+		}       
+		$user = User::create([
+			'name'             => $request->input('name'),
+			'email'            => $request->input('email'),
+			'password'         => bcrypt($request->input('password')),
+		]);
 
-        if (!empty($user->id)) {
-        	User_roles::create([
-            	'user_id'  => $user->id,
-            	'role_id'  => $request->input('role'),            
-        	]);
-        }       
+		if (!empty($user->id)) {
+			User_roles::create([
+				'user_id'  => $user->id,
+				'role_id'  => $request->input('role'),            
+			]);
+		}       
 
-        Session::flash('alert-success', 'laravelusers.messages.user-creation-success');
+		Session::flash('alert-success', 'laravelusers.messages.user-creation-success');
 
 		return response()->json(['success' =>  true , 'response' => trans('laravelusers.messages.user-creation-success')]);
-    }
+	}
 
 
-    public function edit($id)
-    {
-        $user = User::findOrFail($id);
-        $roles = [];
-        $currentRole = '';
-        $roles = Roles::all();         
-     	$role =  User_roles::where('user_id', $id)->first();        	   	
-        $data = [
-            'user'  => $user,
-        	'roles' => $roles,
-        	'currentRole' =>  $role
-        ];      
-        return view('users/edit')->with($data);
-    }
+	public function edit($id)
+	{
+		$user = User::findOrFail($id);
+		$roles = [];
+		$currentRole = '';
+		$roles = Roles::all();         
+		$role =  User_roles::where('user_id', $id)->first();        	   	
+		$data = [
+			'user'  => $user,
+			'roles' => $roles,
+			'currentRole' =>  $role
+		];      
+		return view('users/edit')->with($data);
+	}
 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $user = User::find($id);
-        $emailCheck = ($request->input('email') != '') && ($request->input('email') != $user->email);
-        $passwordCheck = $request->input('password') != null;
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @param int                      $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update(Request $request, $id)
+	{
+		$user = User::find($id);
+		$emailCheck = ($request->input('email') != '') && ($request->input('email') != $user->email);
+		$passwordCheck = $request->input('password') != null;
 
-        $rules = [
-            'name' => 'required|max:255',
-        ];
+		$rules = [
+			'name' => 'required|max:255',
+		];
 
-        if ($emailCheck) {
-            $rules['email'] = 'required|email|max:255|unique:users';
-        }
+		if ($emailCheck) {
+			$rules['email'] = 'required|email|max:255|unique:users';
+		}
 
-        if ($passwordCheck) {
-            $rules['password'] = 'required|string|min:6|max:20|confirmed';
-            $rules['password_confirmation'] = 'required|string|same:password';
-        }     
+		if ($passwordCheck) {
+			$rules['password'] = 'required|string|min:6|max:20|confirmed';
+			$rules['password_confirmation'] = 'required|string|same:password';
+		}     
 
-         $messages = [
-            'name.unique'         => trans('laravelusers.messages.userNameTaken'),
-            'name.required'       => trans('laravelusers.messages.userNameRequired'),
-            'email.required'      => trans('laravelusers.messages.emailRequired'),
-            'email.email'         => trans('laravelusers.messages.emailInvalid'),
-            'password.required'   => trans('laravelusers.messages.passwordRequired'),
-            'password.min'        => trans('laravelusers.messages.PasswordMin'),
-            'password.max'        => trans('laravelusers.messages.PasswordMax'),
-            'role.required'       => trans('laravelusers.messages.roleRequired'),
-        ];   
+		 $messages = [
+			'name.unique'         => trans('laravelusers.messages.userNameTaken'),
+			'name.required'       => trans('laravelusers.messages.userNameRequired'),
+			'email.required'      => trans('laravelusers.messages.emailRequired'),
+			'email.email'         => trans('laravelusers.messages.emailInvalid'),
+			'password.required'   => trans('laravelusers.messages.passwordRequired'),
+			'password.min'        => trans('laravelusers.messages.PasswordMin'),
+			'password.max'        => trans('laravelusers.messages.PasswordMax'),
+			'role.required'       => trans('laravelusers.messages.roleRequired'),
+		];   
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-       
-        if ($validator->fails()) {
-        	$messages = $validator->messages();
-            return response()->json(['success' => false , 'response' => $messages]);
-        } 
+		$validator = Validator::make($request->all(), $rules, $messages);
+	   
+		if ($validator->fails()) {
+			$messages = $validator->messages();
+			return response()->json(['success' => false , 'response' => $messages]);
+		} 
 
-        $user->name = $request->input('name');
+		$user->name = $request->input('name');
 
-        if ($emailCheck) {
-            $user->email = $request->input('email');
-        }
+		if ($emailCheck) {
+			$user->email = $request->input('email');
+		}
 
-        if ($passwordCheck) {
-            $user->password = bcrypt($request->input('password'));
-        }             
+		if ($passwordCheck) {
+			$user->password = bcrypt($request->input('password'));
+		}             
 
-        $user->save();
+		$user->save();
 
 		Session::flash('alert-success', trans('laravelusers.messages.update-user-success'));
 
 		return response()->json(['success' =>  true , 'response' => trans('laravelusers.messages.update-user-success')]);
-    }
+	}
 
 
-    public function destroy($id) {                
+	public function destroy($id) {                
 		$customer = User::find($id);
 		$customer->status = '0';
 		$customer->save();        
@@ -189,46 +189,46 @@ class UsersController extends Controller
 
 
 	public function center($id) {                
-        $centers = Center::all(); 
-     	$userCenters = User_Center::where('user_id', $id)->get();
-     	$currentCenters = array();
-     	foreach ($userCenters as $key => $row) {
-     		$currentCenters[] = $row->center_id;
-     	}     
-        $data = [            
-        	'centers' =>   $centers,
-        	'currentCenters' =>  $currentCenters
-        ];      
-        return view('users/center')->with($data);
-    }
+		$centers = Center::all(); 
+		$userCenters = User_Center::where('user_id', $id)->get();
+		$currentCenters = array();
+		foreach ($userCenters as $key => $row) {
+			$currentCenters[] = $row->center_id;
+		}     
+		$data = [            
+			'centers' =>   $centers,
+			'currentCenters' =>  $currentCenters
+		];      
+		return view('users/center')->with($data);
+	}
 
-    public function update_center(Request $request, $userId) {
-    	$currentCenters = User_Center::where('user_id', $userId)->get(); 
-    	$ids = array();
-    	foreach ($currentCenters as $key => $row) {
-    		$ids[] = $row->id;
-    	}
-    	if(count($ids) > 0) {
-    		User_Center::whereIn('id', $ids)->delete();		
-    	}     
-    	$newCenter = Input::get('center');
-    	if(isset($newCenter) && is_array($newCenter) && count($newCenter)>0) {
-    		foreach ($newCenter as $key => $center) {    			 
-    			User_Center::create([
-	            	'user_id'  => $userId,
-	            	'center_id'  => $center,            
-	        	]);
-    		}
-    	}
-    	 
-    	if(isset($newCenter) && !empty($newCenter) && is_string($newCenter)) {
-    		User_Center::create([
-	           	'user_id'   => $userId,
-	           	'center_id' => $newCenter,            
-	        ]);
-    	}
-     
-    	return response()->json(['success' =>  true , 'response' => trans('Center set Successfully!!!')]);
-    }
+	public function update_center(Request $request, $userId) {
+		$currentCenters = User_Center::where('user_id', $userId)->get(); 
+		$ids = array();
+		foreach ($currentCenters as $key => $row) {
+			$ids[] = $row->id;
+		}
+		if(count($ids) > 0) {
+			User_Center::whereIn('id', $ids)->delete();		
+		}     
+		$newCenter = Input::get('center');
+		if(isset($newCenter) && is_array($newCenter) && count($newCenter)>0) {
+			foreach ($newCenter as $key => $center) {    			 
+				User_Center::create([
+					'user_id'  => $userId,
+					'center_id'  => $center,            
+				]);
+			}
+		}
+		 
+		if(isset($newCenter) && !empty($newCenter) && is_string($newCenter)) {
+			User_Center::create([
+				'user_id'   => $userId,
+				'center_id' => $newCenter,            
+			]);
+		}
+	 
+		return response()->json(['success' =>  true , 'response' => trans('Center set Successfully!!!')]);
+	}
 
 }

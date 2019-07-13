@@ -26,7 +26,11 @@ Route::get('/services/destroy/{id}', 'CustomersController@servicesDestroy');
 Route::get('/leads', 'CustomersController@leads');
 Route::post('/lead/destroy/{id}', 'CustomersController@leadDestory');
 Route::get('/lead/edit/{id}', 'CustomersController@editLead');
+Route::post('/lead/update_lead_data/{id}', 'CustomersController@update_lead_data');
 Route::get('/sale/edit/{id}', 'CustomersController@editSales');
+Route::post('/sale/load_services/{id}', 'CustomersController@load_services');
+Route::post('/sale/update_sale_data/{id}', 'CustomersController@update_sale_data');
+
 
 Route::get('/users', 'UsersController@index');
 Route::get('/users/create', 'UsersController@create');
