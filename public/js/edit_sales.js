@@ -6,6 +6,7 @@ $(document).ready( function() {
 			open: function () {
 				var closeBtn = $('.ui-dialog-titlebar-close');
 				closeBtn.append('<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>');
+				$("#formService").get(0).reset();
 			},
 			close: function () {
 				var closeBtn = $('.ui-dialog-titlebar-close');
@@ -60,28 +61,28 @@ $(document).ready( function() {
 
 function delete_service(key) {
 	var message = 'Are you sure delete this record? ';
-    $('<div></div>').appendTo('body')
-    .html('<div><h6>'+message+'?</h6></div>')
-    .dialog({
-        modal: true, 
-        title: 'Delete message', 
-        zIndex: 10000, 
-        autoOpen: true,
-        width: 200, 
-        resizable: false,
-        buttons: {
-            Yes: function () {
-            	confim_delete_service(key)               
-            },
-            No: function () {                                                                 
-               // $('body').append('<h1>Confirm Dialog Result: <i>No</i></h1>');
-                $(this).dialog("close");
-            }
-        },
-        close: function (event, ui) {
-            $(this).remove();
-        }
-    }); 
+	$('<div></div>').appendTo('body')
+	.html('<div><h6>'+message+'?</h6></div>')
+	.dialog({
+		modal: true, 
+		title: 'Delete message', 
+		zIndex: 10000, 
+		autoOpen: true,
+		width: 400, 
+		resizable: false,
+		buttons: {
+			Yes: function () {
+				confim_delete_service(key);  
+				$(this).dialog("close");            
+			},
+			No: function () {                                                                 			  
+				$(this).dialog("close");
+			}
+		},
+		close: function (event, ui) {
+			$(this).remove();
+		}
+	}); 
 }
 
 
@@ -89,7 +90,7 @@ function delete_service(key) {
 function confim_delete_service(key) {
 	$.ajax({
 		type: "GET",
-		url: "services/destroy/"+key,		
+		url: "/services/destroy/"+key,		
 		success: function(data) {
 			if(data.success) {
 				var $table = $('<table class="table table-striped" />');

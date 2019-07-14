@@ -6,6 +6,7 @@ $(document).ready( function() {
 			open: function () {
 				var closeBtn = $('.ui-dialog-titlebar-close');
 				closeBtn.append('<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>');
+				$("#formService").get(0).reset();
 			},
 			close: function () {
 				var closeBtn = $('.ui-dialog-titlebar-close');
@@ -96,14 +97,14 @@ function delete_service(key) {
 		title: 'Delete message', 
 		zIndex: 10000, 
 		autoOpen: true,
-		width: 200, 
+		width: 400, 
 		resizable: false,
 		buttons: {
 			Yes: function () {
-				confim_delete_service(key)               
+				confim_delete_service(key);  
+				$(this).dialog("close");            
 			},
-			No: function () {                                                                 
-			   // $('body').append('<h1>Confirm Dialog Result: <i>No</i></h1>');
+			No: function () {                                                                 			  
 				$(this).dialog("close");
 			}
 		},
@@ -118,7 +119,7 @@ function delete_service(key) {
 function confim_delete_service(key) {
 	$.ajax({
 		type: "GET",
-		url: "services/destroy/"+key,		
+		url: "/services/destroy/"+key,		
 		success: function(data) {
 			if(data.success) {
 				var $table = $('<table class="table table-striped" />');

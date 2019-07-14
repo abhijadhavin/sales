@@ -14,7 +14,7 @@
 			{{ csrf_field() }}
 			 
 			<div class="panel panel-default">
-				<div class="panel-heading">Customer Details</div>
+				<div class="panel-heading">Add Customer New Details</div>
 				<div class="panel-body">
 					<div class="form-group">
 						<label for="inputEmail3" class="col-sm-2 control-label">Today Date:</label>

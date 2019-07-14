@@ -259,6 +259,9 @@ class CustomersController extends Controller
 	}
 
 	public function editLead($id) {
+		if (Session::has('servies_data')) {
+			Session::forget('servies_data');
+		}
 		$lead = Leads::findOrFail($id);   
 		$links = array('edit_sales.js');		
 		$data = [
@@ -461,12 +464,72 @@ class CustomersController extends Controller
 			'state' => 'required',
 			'postcode' => 'required',
 			'customer_type' => 'required',
-			'form_type' => 'required'			
+			'form_type' => 'required',
+			'services' => 'required'			
 		]);
 
 		$formtype = $request->form_type;
-		if ( $formtype !== 'lead') {
-			
+		if ( $formtype !== 'lead') {			 
+			$customer->user_id = $id;			
+			$customer->executive_id = $request->executive_id;
+			$customer->first_name = $request->first_name;
+			$customer->middle_name = $request->middle_name;
+			$customer->last_name = $request->last_name;
+			$customer->contact = $request->contact;
+			$customer->email = $request->email;
+			$customer->customer_type = $request->customer_type;
+			$customer->op_date = $request->op_date;
+			$customer->comments = $request->comments;
+			$customer->status =  '1';			
+			$customer->updated_date =  date('Y-m-d');
+			$customer->save();
+			$wasChanged = $customer->wasChanged();
+			if(isset($editId) && !empty($editId)){
+				$custId = $editId;
+				$address->cust_id = $custId;
+				$address->building_type = '';
+				$address->building_number_suffix = '';
+				$address->building_name = '';
+				$address->number_first = '';
+				$address->number_last = '';
+				$address->street_name = '';
+				$address->street_type = '';
+				$address->street_address1 =  $request->street_address1;
+				$address->street_address2 =  $request->street_address2;
+				$address->suburb =  $request->suburb;				
+				$address->state =  $request->state;	
+				$address->city_town = '';
+				$address->postcode =  $request->postcode;	
+				$address->status =  '1';				
+				$address->updated_at =  date('Y-m-d');
+				$address->save();
+				$services = $request->services;				
+				if(isset($services) && count($services)>0  && Session::has('servies_data')){
+					Services::where('cust_id', $custId)->delete();						
+					$servicesData = Session::get('servies_data');
+					foreach ($servicesData as $key => $row) {
+						$service = new Services();
+						$service->cust_id = $custId;
+						$service->cli_number = $row['cli_number'];	
+						$service->product_type =  $row['product_type'];	
+						$service->plan_name =  $row['plan_name'];	
+						$service->plan_price =  $row['plan_price'];	
+						$service->plan_type =  $row['plan_type'];	
+						$service->handset_type =  $row['handset_type'];
+						$service->handset_value =  $row['handset_value'];	
+						$service->contract_stage =  $row['contract_stage'];	
+						$service->id_status =  $row['id_status'];	
+						$service->direct_debit_details =  $row['direct_debit_details'];	
+						$service->order_status =  $row['order_status'];	
+						$service->order_status_date =  $row['order_status_date'];	
+						$service->status = '1';
+						$service->created_date =  date('Y-m-d');
+						$service->update_date =  date('Y-m-d');
+						$service->save();
+					}
+					Session::forget('servies_data');					
+				}
+			}
 		}
 		return redirect('/customer')->with('message','Sales Updated successfully!'); 
 	}
