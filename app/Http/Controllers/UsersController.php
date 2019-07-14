@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
 
 use Validator;
 use Auth;
@@ -15,7 +16,7 @@ use App\Roles;
 use App\Center;
 use App\User_roles;
 use App\User_Center;
- 
+use DB;
 
 class UsersController extends Controller
 {  
@@ -24,11 +25,37 @@ class UsersController extends Controller
 		$this->middleware('auth');
 	}
 
-	public function index(Request $request) {     	
+	protected function isSuperAdmin() {
+		$roles = $this->get_current_user_roles();
+		if(in_array('SUPER ADMIN', $roles)){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	protected function get_current_user_roles() {
 		$id = Auth::id();
-		$links = array('users.js');					
-		$users = User::where('status', '1')->orderBy('id', 'desc')->paginate(10);
-		return view('users/index',compact('users'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
+		$roles = array();
+		$rolesData  =  DB::table('user_roles')
+					->select('roles.name')
+					->join('roles', 'user_roles.role_id', '=', 'roles.id')
+					->where('user_id',$id)		    	
+					->get();
+		foreach ($rolesData as $key => $role) {
+			$roles[] = strtoupper($role->name);
+		}
+		return $roles;    
+	}
+
+	public function index(Request $request) {  
+		if($this->isSuperAdmin()) {   	
+			$id = Auth::id();
+			$links = array('users.js');					
+			$users = User::where('status', '1')->orderBy('id', 'desc')->paginate(10);
+			return view('users/index',compact('users'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
+		} else {
+			return Redirect::back()->withErrors(['Access Denied!']);
+		}	
 	}
 
 

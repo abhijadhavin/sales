@@ -8,32 +8,67 @@ use App\Address;
 use App\Customers;
 use App\Services;
 use App\Leads;
+use App\User_Center;
 use Session;
+use DB;
 
 class CustomersController extends Controller
 {
 
 	 /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+	
 	//
 	public function index(Request $request) {
 		$id = Auth::id();
-		$links = array('customers.js');			
-		if(in_array($id, array(4,3,2))){
+		$roles = $this->get_current_user_roles();		 
+		$centers = $this->get_current_user_centers();		 
+		$links = array('customers.js');
+		if(in_array('SUPER ADMIN', $roles)){
 			$customers = Customers::where('status','1')->orderBy('id', 'desc')->paginate(10);
-		} else {
+		} elseif(in_array('ADMIN', $roles)){ 
+			$customers = Customers::where('status','1')
+					 ->leftJoin('user_center', 'user_center.user_id', '=', 'customers.user_id')
+					 ->whereIn('user_center.center_id', $centers)
+					 ->orderBy('customers.id', 'desc')
+					 ->paginate(10);
+		}else{
 			$customers = Customers::where('status','1')->where('user_id',$id)->orderBy('id', 'desc')->paginate(10);
 		}		
 		return view('customers/index',compact('customers'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
 	}
+
+	protected function get_current_user_roles() {
+		$id = Auth::id();
+		$roles = array();
+		$rolesData  =  DB::table('user_roles')
+					->select('roles.name')
+					->join('roles', 'user_roles.role_id', '=', 'roles.id')
+					->where('user_id',$id)		    	
+					->get();
+		foreach ($rolesData as $key => $role) {
+			$roles[] = strtoupper($role->name);
+		}
+		return $roles;    
+	}
+
+	public function get_current_user_centers() {
+		$userId = Auth::id();
+		$currentCenters = User_Center::where('user_id', $userId)->get(); 
+		$ids = array();
+		foreach ($currentCenters as $key => $row) {
+			$ids[] = $row->center_id;
+		}
+		return $ids;
+	}	
+	 
 
 	public function customer() {
 		if (Session::has('servies_data')) {
@@ -242,10 +277,18 @@ class CustomersController extends Controller
 	//
 	public function leads(Request $request) {
 		$id = Auth::id();
-		$links = array('leads.js');	
-		if(in_array($id, array(4,3,2))){		
+		$roles = $this->get_current_user_roles();		 
+		$centers = $this->get_current_user_centers();
+		$links = array('leads.js');			 		
+		if(in_array('SUPER ADMIN', $roles)){
 			$leads = Leads::where('status','1')->orderBy('id', 'desc')->paginate(10);
-		} else {
+		} elseif(in_array('ADMIN', $roles)){ 						
+			$leads = Leads::where('status','1')
+					 ->leftJoin('user_center', 'user_center.user_id', '=', 'leads.user_id')
+					 ->whereIn('user_center.center_id', $centers)
+					 ->orderBy('leads.id', 'desc')
+					 ->paginate(10);	
+		}else{
 			$leads = Leads::where('status','1')->where('user_id',$id)->orderBy('id', 'desc')->paginate(10);
 		}	
 		return view('customers/leads',compact('leads'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
