@@ -155,9 +155,10 @@ class UsersController extends Controller
 	public function update(Request $request, $id)
 	{
 		$user = User::find($id);
+		$role =  User_roles::where('user_id', $id)->first(); 
 		$emailCheck = ($request->input('email') != '') && ($request->input('email') != $user->email);
 		$passwordCheck = $request->input('password') != null;
-
+		$roleCheck = ($request->input('role') != '') && ($request->input('role') != $role->role_id);
 		$rules = [
 			'name' => 'required|max:255',
 		];
@@ -200,6 +201,11 @@ class UsersController extends Controller
 		}             
 
 		$user->save();
+
+		if($roleCheck) {
+			$role->role_id = $request->input('role');			
+			$role->save();
+		}		 
 
 		Session::flash('alert-success', trans('laravelusers.messages.update-user-success'));
 
