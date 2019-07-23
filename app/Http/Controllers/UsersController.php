@@ -52,7 +52,7 @@ class UsersController extends Controller
 		if($this->isSuperAdmin()) {   	
 			$id = Auth::id();
 			$links = array('users.js');					
-			$users = User::where('status', '1')->orderBy('id', 'desc')->paginate(10);
+			$users = User::where('status', '1')->where('id', '>', '1')->orderBy('id', 'desc')->paginate(10);
 			return view('users/index',compact('users'))->with('i', ($request->input('page', 1) - 1) * 10)->with('links', $links);	
 		} else {
 			return Redirect::back()->withErrors(['Access Denied!']);
