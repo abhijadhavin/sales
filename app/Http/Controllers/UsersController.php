@@ -17,6 +17,7 @@ use App\Center;
 use App\User_roles;
 use App\User_Center;
 use DB;
+use View;
 
 class UsersController extends Controller
 {  
@@ -122,7 +123,7 @@ class UsersController extends Controller
 			]);
 		}       
 
-		Session::flash('alert-success', 'laravelusers.messages.user-creation-success');
+		Session::flash('message', 'laravelusers.messages.user-creation-success');
 
 		return response()->json(['success' =>  true , 'response' => trans('laravelusers.messages.user-creation-success')]);
 	}
@@ -207,7 +208,7 @@ class UsersController extends Controller
 			$role->save();
 		}		 
 
-		Session::flash('alert-success', trans('laravelusers.messages.update-user-success'));
+		Session::flash('message', trans('laravelusers.messages.update-user-success'));
 
 		return response()->json(['success' =>  true , 'response' => trans('laravelusers.messages.update-user-success')]);
 	}
@@ -260,7 +261,7 @@ class UsersController extends Controller
 				'center_id' => $newCenter,            
 			]);
 		}
-	 
+	 	Session::flash('message', trans('Center Update Successfully!!'));
 		return response()->json(['success' =>  true , 'response' => trans('Center set Successfully!!!')]);
 	}
 
