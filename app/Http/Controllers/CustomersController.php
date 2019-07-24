@@ -82,8 +82,7 @@ class CustomersController extends Controller
 		//print_r( $request); 	
 		$id = Auth::id();			
 		$validatedData = $request->validate([
-			'op_date' => 'required',
-			'executive_id' => 'required',
+			'op_date' => 'required',			
 			'first_name' => 'required',
 			'last_name' => 'required',
 			'contact' => 'required',
@@ -97,13 +96,15 @@ class CustomersController extends Controller
 		]);
 
 		$formtype = $request->form_type;
+		$middleName	= (isset($request->middle_name) && !empty($request->middle_name)) ? $request->middle_name : '';
+		$address2 = (isset($request->street_address2) && !empty($request->street_address2)) ? $request->street_address2 : '';
 		if ( $formtype === 'lead') {
 
 			$lead = new Leads();
 			$lead->user_id = $id;
-			$lead->executive_id = $request->executive_id;
+			$lead->executive_id = $id;
 			$lead->first_name = $request->first_name;
-			$lead->middle_name = $request->middle_name;
+			$lead->middle_name = $middleName;
 			$lead->last_name = $request->last_name;
 			$lead->contact = $request->contact;
 			$lead->email = $request->email;
@@ -121,7 +122,7 @@ class CustomersController extends Controller
 			$lead->street_name = '';
 			$lead->street_type = '';
 			$lead->street_address1 =  $request->street_address1;
-			$lead->street_address2 =  $request->street_address2;
+			$lead->street_address2 =  $address2;
 			$lead->suburb =  $request->suburb;				
 			$lead->state =  $request->state;	
 			$lead->city_town = '';
@@ -134,9 +135,9 @@ class CustomersController extends Controller
 			]);
 			$task = new Customers();
 			$task->user_id = $id;			
-			$task->executive_id = $request->executive_id;
+			$task->executive_id = $id;
 			$task->first_name = $request->first_name;
-			$task->middle_name = $request->middle_name;
+			$task->middle_name = $middleName;
 			$task->last_name = $request->last_name;
 			$task->contact = $request->contact;
 			$task->email = $request->email;
@@ -160,7 +161,7 @@ class CustomersController extends Controller
 				$caddress->street_name = '';
 				$caddress->street_type = '';
 				$caddress->street_address1 =  $request->street_address1;
-				$caddress->street_address2 =  $request->street_address2;
+				$caddress->street_address2 =  $address2;
 				$caddress->suburb =  $request->suburb;				
 				$caddress->state =  $request->state;	
 				$caddress->city_town = '';
@@ -273,8 +274,7 @@ class CustomersController extends Controller
 		return redirect('/customer')->with('message', 'Customer has been deleted!!');
 	} 
 
-
-	//
+	
 	public function leads(Request $request) {
 		$id = Auth::id();
 		$roles = $this->get_current_user_roles();		 
@@ -319,8 +319,7 @@ class CustomersController extends Controller
 		$lead = Leads::findOrFail($editId); 
 		$id = Auth::id();			
 		$validatedData = $request->validate([
-			'op_date' => 'required',
-			'executive_id' => 'required',
+			'op_date' => 'required',			
 			'first_name' => 'required',
 			'last_name' => 'required',
 			'contact' => 'required',
@@ -334,11 +333,13 @@ class CustomersController extends Controller
 		]);
 
 		$formtype = $request->form_type;
-		if ( $formtype === 'lead') {			
+		$middleName	= (isset($request->middle_name) && !empty($request->middle_name)) ? $request->middle_name : '';
+		$address2 = (isset($request->street_address2) && !empty($request->street_address2)) ? $request->street_address2 : '';
+		if ( $formtype === 'lead') {	
 			$lead->user_id = $id;
-			$lead->executive_id = $request->executive_id;
+			$lead->executive_id = $id;
 			$lead->first_name = $request->first_name;
-			$lead->middle_name = $request->middle_name;
+			$lead->middle_name = $middleName;
 			$lead->last_name = $request->last_name;
 			$lead->contact = $request->contact;
 			$lead->email = $request->email;
@@ -354,8 +355,8 @@ class CustomersController extends Controller
 			$lead->number_last = '';
 			$lead->street_name = '';
 			$lead->street_type = '';
-			$lead->street_address1 =  $request->street_address1;
-			$lead->street_address2 =  $request->street_address2;
+			$lead->street_address1 = $request->street_address1;
+			$lead->street_address2 = $address2;
 			$lead->suburb =  $request->suburb;				
 			$lead->state =  $request->state;	
 			$lead->city_town = '';
@@ -367,9 +368,9 @@ class CustomersController extends Controller
 			]);
 			$task = new Customers();
 			$task->user_id = $id;			
-			$task->executive_id = $request->executive_id;
+			$task->executive_id = $id;
 			$task->first_name = $request->first_name;
-			$task->middle_name = $request->middle_name;
+			$task->middle_name = $middleName;
 			$task->last_name = $request->last_name;
 			$task->contact = $request->contact;
 			$task->email = $request->email;
@@ -393,7 +394,7 @@ class CustomersController extends Controller
 				$caddress->street_name = '';
 				$caddress->street_type = '';
 				$caddress->street_address1 =  $request->street_address1;
-				$caddress->street_address2 =  $request->street_address2;
+				$caddress->street_address2 =  $address2;
 				$caddress->suburb =  $request->suburb;				
 				$caddress->state =  $request->state;	
 				$caddress->city_town = '';
@@ -496,8 +497,7 @@ class CustomersController extends Controller
 		$address = Address::where('cust_id', $editId)->where('status', '1')->first();
 		$id = Auth::id();			
 		$validatedData = $request->validate([
-			'op_date' => 'required',
-			'executive_id' => 'required',
+			'op_date' => 'required',			 
 			'first_name' => 'required',
 			'last_name' => 'required',
 			'contact' => 'required',
@@ -512,11 +512,13 @@ class CustomersController extends Controller
 		]);
 
 		$formtype = $request->form_type;
+		$middleName	= (isset($request->middle_name) && !empty($request->middle_name)) ? $request->middle_name : '';
+		$address2 = (isset($request->street_address2) && !empty($request->street_address2)) ? $request->street_address2 : '';
 		if ( $formtype !== 'lead') {			 
 			$customer->user_id = $id;			
-			$customer->executive_id = $request->executive_id;
+			$customer->executive_id = $id;
 			$customer->first_name = $request->first_name;
-			$customer->middle_name = $request->middle_name;
+			$customer->middle_name = $middleName;
 			$customer->last_name = $request->last_name;
 			$customer->contact = $request->contact;
 			$customer->email = $request->email;
@@ -528,6 +530,7 @@ class CustomersController extends Controller
 			$customer->save();
 			$wasChanged = $customer->wasChanged();
 			if(isset($editId) && !empty($editId)){
+				$address2 = (isset($request->street_address2) && !empty($request->street_address2)) ? $request->street_address2 : '';
 				$custId = $editId;
 				$address->cust_id = $custId;
 				$address->building_type = '';
@@ -537,8 +540,8 @@ class CustomersController extends Controller
 				$address->number_last = '';
 				$address->street_name = '';
 				$address->street_type = '';
-				$address->street_address1 =  $request->street_address1;
-				$address->street_address2 =  $request->street_address2;
+				$address->street_address1 = $request->street_address1;
+				$address->street_address2 = $address2 ;
 				$address->suburb =  $request->suburb;				
 				$address->state =  $request->state;	
 				$address->city_town = '';

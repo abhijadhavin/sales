@@ -29,6 +29,7 @@
 							</div>
 						</div>
 					</div>
+					<?php /*
 					<div class="form-group">
 						<label for="inputEmail3" class="col-sm-2 control-label">Executive Id:</label>
 						<div class="col-sm-10">							
@@ -40,6 +41,7 @@
 							</div>
 						</div>
 					</div>
+					 */ ?>
 					<div class="form-group">
 						<label for="inputPassword3" class="col-sm-2 control-label">Name:</label>
 						<div class="col-sm-10">
@@ -48,7 +50,7 @@
 								<input type="text" class="form-control" name="first_name" placeholder="First Name" required value="{{$customer->first_name }}" >
 							  </div>
 							  <div class="col-xs-3">
-								<input type="text" class="form-control" name="middle_name" placeholder="Middle Name" required value="{{ $customer->middle_name}}" >
+								<input type="text" class="form-control" name="middle_name" placeholder="Middle Name" value="{{ $customer->middle_name}}" >
 							  </div>
 							  <div class="col-xs-3">
 								<input type="text" class="form-control" name="last_name" placeholder="Last Name" required value="{{ $customer->last_name}}">
@@ -89,7 +91,7 @@
 							</div>							
 							<div class="form-group row">
 								<div class="col-xs-3">
-									<input type="text" class="form-control" name="street_address2" placeholder="Street Address Line 2 " required value="{{ $customer->street_address2  }}" >
+									<input type="text" class="form-control" name="street_address2" placeholder="Street Address Line 2"  value="{{ $customer->street_address2  }}" >
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>							 
 							</div>

@@ -30,6 +30,7 @@
 							</div>
 						</div>
 					</div>
+					<?php /*
 					<div class="form-group">
 						<label for="inputEmail3" class="col-sm-2 control-label">Executive Id:</label>
 						<div class="col-sm-10">							
@@ -41,6 +42,7 @@
 							</div>
 						</div>
 					</div>
+					*/ ?>
 					<div class="form-group">
 						<label for="inputPassword3" class="col-sm-2 control-label">Name:</label>
 						<div class="col-sm-10">
@@ -49,7 +51,7 @@
 								<input type="text" class="form-control" name="first_name" placeholder="First Name" required value="{{$customer->first_name }}" >
 							  </div>
 							  <div class="col-xs-3">
-								<input type="text" class="form-control" name="middle_name" placeholder="Middle Name" required value="{{ $customer->middle_name}}" >
+								<input type="text" class="form-control" name="middle_name" placeholder="Middle Name" value="{{ $customer->middle_name}}" >
 							  </div>
 							  <div class="col-xs-3">
 								<input type="text" class="form-control" name="last_name" placeholder="Last Name" required value="{{ $customer->last_name}}">
@@ -90,7 +92,7 @@
 							</div>							
 							<div class="form-group row">
 								<div class="col-xs-3">
-									<input type="text" class="form-control" name="street_address2" placeholder="Street Address Line 2 " required value="{{ $address->street_address2  }}" >
+									<input type="text" class="form-control" name="street_address2" placeholder="Street Address Line 2" value="{{ $address->street_address2  }}" >
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>							 
 							</div>
@@ -146,7 +148,7 @@
 										<option value="lead" > Lead Form</option>
 										<option value="sales" selected="selected" > Sales Form </option>
 									</select>	
-									<input type="hidden" name="form_type" value="sales" />								
+									<input type="hidden" name="form_type" value="sales" />
 								</div>
 								<div class="col-xs-6"> &nbsp; </div>
 							</div>	
@@ -157,8 +159,7 @@
 
 			<div class="panel panel-default" id="service-box" >
 				<div class="panel-heading">Service Details</div>
-				<div class="panel-body" >
-				 
+				<div class="panel-body" >				 
 					<div class="container">
 						<div class="row">
 							<div class="col-sm-9"> &nbsp;
@@ -170,8 +171,7 @@
 							</div>	
 						</div>
 					</div>
-					<br/>
-					 
+					<br/>					 
 					<div class="well well-sm">
 						<div class="container-fluid">							
 							<div class="row" >
