@@ -22,6 +22,7 @@ Route::post('/storedata', 'CustomersController@storeCustomer');
 Route::post('/services', 'CustomersController@services');
 Route::post('/customer/destroy/{id}', 'CustomersController@destroy');
 Route::get('/services/destroy/{id}', 'CustomersController@servicesDestroy');
+Route::post('/download', 'CustomersController@download');
 
 Route::get('/leads', 'CustomersController@leads');
 Route::post('/lead/destroy/{id}', 'CustomersController@leadDestory');

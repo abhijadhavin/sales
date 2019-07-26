@@ -11,6 +11,8 @@ use App\Leads;
 use App\User_Center;
 use Session;
 use DB;
+use Response;
+use Validator;
 
 class CustomersController extends Controller
 {
@@ -578,6 +580,105 @@ class CustomersController extends Controller
 			}
 		}
 		return redirect('/customer')->with('message','Sales Updated successfully!'); 
+	}
+
+	public function download(Request $request) {
+		$allFlag = (isset($request->records) && !empty($request->records)) ? 1 : 0; 
+		$fillter = false;
+		if($allFlag === 0) {
+			$rules = [
+				'formDate'  => 'required|date',
+				'toDate'  => 'required|date|after:formDate'				
+			];       
+
+			$messages = [
+				'formDate.required' => trans('Form Date required.'),
+				'toDate.required' => trans('To Date Required'),
+				'formDate.date' => trans('Invliad From Date Format'),
+				'toDate.date' => trans('Invliad To Date Format')
+			];
+
+			$validator = Validator::make($request->all(), $rules, $messages);
+	   
+			if ($validator->fails()) {
+				$messages = $validator->messages();
+				return redirect('/customer')->with('message', $messages); 
+			} else {
+				$fillter = true;
+			}
+		}
+
+		$headers = [
+			'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',   
+			'Content-type'        => 'text/csv',   
+			'Content-Disposition' => 'attachment; filename=export_data.csv',   
+			'Expires'             => '0',   
+			'Pragma'              => 'public'
+		];
+		 
+		$fieldList = [
+			'customers.id', 
+			'customers.first_name', 
+			'customers.middle_name', 
+			'customers.last_name', 
+			'customers.contact', 
+			'customers.email', 
+			'customers.customer_type', 
+			'customers.op_date', 
+			'customers.comments', 
+			'address.street_address1', 
+			'address.street_address2', 
+			'address.suburb', 
+			'address.state', 
+			'address.postcode',
+			'services.cli_number',
+			'services.product_type',
+			'services.plan_name',
+			'services.plan_price',
+			'services.plan_type',
+			'services.handset_type',
+			'services.handset_value',
+			'services.contract_stage',
+			'services.id_status',
+			'services.direct_debit_details',
+			'services.order_status',
+			'services.order_status_date'
+		]; 
+		if($fillter) {
+			$fromDate = (isset($request->fromDate) && !empty($request->fromDate)) ? date('Y-m-d', strtotime($request->fromDate)) : '';
+			$toDate = (isset($request->toDate) && !empty($request->toDate)) ? date('Y-m-d', strtotime($request->toDate)) : ''; 
+
+			$result = DB::table('customers')
+				->join('address', 'customers.id', '=', 'address.cust_id')			
+				->rightJoin('services', 'customers.id', '=', 'services.cust_id')         
+				->select($fieldList)
+				->where('customers.status', '1')
+				->where('customers.updated_date', ">=" , $fromDate)
+				->where('customers.updated_date', "<=" , $toDate)
+				->get();
+		} else {
+			$result = DB::table('customers')
+				->join('address', 'customers.id', '=', 'address.cust_id')			
+				->rightJoin('services', 'customers.id', '=', 'services.cust_id')         
+				->select($fieldList)
+				->where('customers.status', '1')
+				->get();
+		}
+
+		foreach ($result as $key => $row) {
+			$list[] = get_object_vars($row);			 
+		}
+		# add headers for each column in the CSV download
+		array_unshift($list, array_keys($list[0]));	
+
+	   $callback = function() use ($list) {
+			$FH = fopen('php://output', 'w');
+			foreach ($list as $row) { 
+				fputcsv($FH, $row);
+			}
+			fclose($FH);
+		};
+		return Response::stream($callback, 200, $headers);
 	}
 
 }

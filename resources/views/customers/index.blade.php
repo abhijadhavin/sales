@@ -12,10 +12,33 @@
 		@include('common.errors')
 
 		<div class="jumbotron">
-			<div class="container-fluid">			  	 
+			<div class="container-fluid">			 
+				<div class="row">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="container">
+								<form class="form-inline" method="post" action="/download" >
+									{{ csrf_field() }}
+									<div class="form-group">
+										<label for="email">From Date:</label>
+										<input type="date" class="form-control" name="formDate" id="formDate" style="line-height: 15px;" >&nbsp;&nbsp;
+									</div>
+									<div class="form-group">
+										<label for="pwd">To Date:</label>
+										<input type="date" class="form-control" name="toDate" id="toDate" style="line-height: 15px;" >&nbsp;&nbsp;
+									</div>
+									<div class="checkbox">
+									    <label><input type="checkbox" name="records" /> All Records &nbsp;&nbsp;</label>
+									</div>							 
+									<button type="submit" class="btn btn-primary"><i class="fa fa-download"></i> Export Sale Data</button>
+								</form> 
+							</div>
+						</div>
+					</div>	
+				</div> 	 
 				<div class="row"> 
 					<div class="panel panel-default">
-						<div class="panel-heading">Customer List</div>
+						<div class="panel-heading">Sales Customer List</div>
 							<div class="panel-body">									 
 								<div class="table-responsive">
 								<table class="table table-striped">
