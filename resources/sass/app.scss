@@ -6,3 +6,7 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+input[type="date"] {
+	line-height: 15px;     
+}

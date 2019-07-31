@@ -241,13 +241,37 @@ class CustomersController extends Controller
 			} else {
 				$serviceData = array();
 			}
-
-			$serviceData[] = $service;
+			$oldId = $request->oldId;
+			if($oldId > -1) {
+				$serviceData[$oldId] = $service;			
+			} else {
+				$serviceData[] = $service;	
+			}
 			Session::put('servies_data', $serviceData);
 			$sessionData = Session::get('servies_data');
 			$flag = true;
 		}
 		return response()->json(['success' => $flag , 'response' => $sessionData]);
+	}
+
+	public function get_services_row(Request $request) {
+		$id = $request->id;
+		$flag = false;
+		$response = 'Invliad input key';		
+		if($request->ajax() && $id > -1){
+			if (Session::has('servies_data')) {
+				$serviceData = Session::get('servies_data');
+				if(isset($serviceData) &&  is_array($serviceData) &&array_key_exists($id, $serviceData)) {
+					$response = $serviceData[$id]; 
+					$flag = true;
+				} else {
+				   $response = 'Invalid Id Key';
+				}
+			} else {
+				$response = 'No Session Data'; 	
+			}
+		}  
+		return response()->json(['success' => $flag, 'response' => $response]);
 	}
 
 	public function servicesDestroy(Request $request) {

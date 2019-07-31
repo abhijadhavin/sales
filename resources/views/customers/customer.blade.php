@@ -203,8 +203,10 @@
 	<!-- TODO: Current Tasks -->
 	 <div id="dialog" title="Add Service" style="display: none;">
 	 	<div class="well well-sm">
+	 	<p id="dialogError"></p>	
 	 	<form id="formService" class="form-horizontal">
-	 		{{ csrf_field() }}			 
+	 		{{ csrf_field() }}	
+	 		<input type="hidden" name="oldId" id="oldId" value="-1">		 
 		   	<div class="container-fluid">							
 				<div class="row">
 					<div class="col-sm-6">
